@@ -2,13 +2,31 @@
 import {Alert} from 'react-native';
 
 import {getRealm} from './Realm';
-
 import {getUUID} from '../services/UUID';
 
-export const getEntries = async () => {
-  const realm = await getRealm();
+import moment from '../vendors/moment';
 
-  const entries = realm.objects('Entry');
+export const getEntries = async (days, category) => {
+  let realm = await getRealm();
+
+  realm = realm.objects('Entry');
+
+  if (days > 0) {
+    const date = moment()
+      .subtract(days, 'days')
+      .toDate();
+
+      realm = realm.filtered('entryAt >= $0', date);
+  }
+
+  if (category && category.id) {
+    console.log('getEntries :: category ', JSON.stringify(category));
+
+    realm = realm.filtered('category == $0', category);
+  }
+
+  const entries = realm.sorted('entryAt', true);
+
   console.log('getEntries :: entries', JSON.stringify(entries));
   return entries;
 };
@@ -23,7 +41,13 @@ export const saveEntry = async (value, entry = {}) => {
         id: value.id || entry.id || getUUID(),
         amount: value.amount || entry.amount,
         entryAt: value.entryAt || entry.entryAt,
+        description: value.category.name,
+        photo: value.photo,
+        address: value.address || entry.address,
+        latitude: value.latitude || entry.latitude,
+        longitude: value.longitude || entry.longitude,
         isInit: false,
+        category: value.category || entry.category,
       };
 
       realm.create('Entry', data, true);

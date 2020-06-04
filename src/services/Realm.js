@@ -8,8 +8,9 @@ import {getDefaultCategories} from './Categories';
 export const getRealm = async () => {
   const realm = await Realm.open({
     schema: [CategorySchemas, EntrySchemas],
-    schemaVersion: 3,
+    schemaVersion: 4,
   });
+
   // dropDB(realm);
   initDB(realm);
 

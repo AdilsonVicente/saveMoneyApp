@@ -1,11 +1,18 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {View, TextInput, Button, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+
+import ActionFooter, {ActionPrimaryButton, ActionSecondaryButton} from '../../components/Core/ActionFooter';
 
 import BalanceLabel from '../../components/BalanceLabel';
 import NewEntryInput from './NewEntryInput';
+import NewEntryCategoryPicker from './NewEntryCategoryPicker';
+import NewEntryDatePicker from './NewEntryDatePicker';
+import NewEntryCameraPicker from './NewEntryCameraPicker';
+import NewEntryAddressPicker from './NewEntryAddressPicker';
+import NewEntryDeleteAction from './NewEntryDeleteAction';
 
-import {saveEntry, deleteEntry} from '../../services/Entries';
+import useEntries from '../../hooks/useEntries';
 
 import Colors from '../../styles/Colors';
 
@@ -14,9 +21,23 @@ const NewEntry = ({navigation}) => {
     id: null,
     amount: '0.00',
     entryAt: new Date(),
+    photo: null,
+    address: null,
+    latitude: null,
+    longitude: null,
+    category: {id: null, name: 'Selecione'},
   });
 
-  const [amount, setAmount] = useState(`${entry.amount}`);
+  const [, saveEntry, deleteEntry] = useEntries();
+
+  const [debit, setDebit] = useState(entry.amount >= 0);
+  const [amount, setAmount] = useState(entry.amount);
+  const [category, setCategory] = useState(entry.category);
+  const [entryAt, setEntryAt] = useState(entry.entryAt);
+  const [photo, setPhoto] = useState(entry.photo);
+  const [address, setAddress] = useState(entry.address);
+  const [latitude, setLatitude] = useState(entry.latitude);
+  const [longitude, setLongitude] = useState(entry.longitude);
 
   const isValid = () => {
     if (parseFloat(amount) !== 0) {
@@ -29,6 +50,12 @@ const NewEntry = ({navigation}) => {
   const onSave = () => {
     const data = {
       amount: parseFloat(amount),
+      category: category,
+      photo: photo,
+      address: address,
+      latitude: latitude,
+      longitude: longitude,
+      entryAt: entryAt,
     };
 
     console.log('NewEntry :: save ', data);
@@ -49,26 +76,47 @@ const NewEntry = ({navigation}) => {
     <View style={styles.container}>
       <BalanceLabel />
 
-      <View>
-        <NewEntryInput value={amount} onChangeValue={setAmount} />
-        <TextInput
-          style={styles.input}
-          onChangeText={text => setAmount(text)}
+      <View style={styles.formContainer}>
+        <NewEntryInput
           value={amount}
+          onChangeValue={setAmount}
+          onChangeDebit={setDebit}
         />
-        <TextInput style={styles.input} />
-        <Button title="GPS" />
-        <Button title="Camera" />
+        <NewEntryCategoryPicker
+          debit={debit}
+          category={category}
+          onChangeCategoty={setCategory}
+        />
+
+        <View style={styles.formActionContainer}>
+          <NewEntryDatePicker value={entryAt} onChange={setEntryAt} />
+          <NewEntryCameraPicker photo={photo} onChangePhoto={setPhoto} />
+          <NewEntryAddressPicker
+            address={address}
+            onChange={({Latitude, Longitude, Address}) => {
+              setLatitude();
+              setLongitude();
+              setAddress();
+            }}
+          />
+          <NewEntryDeleteAction entry={entry} onOkPress={onDelete} />
+        </View>
       </View>
 
-      <View>
-        <Button title="Adicionar"
-        onPress={() => {
-          isValid() && onSave();
-        }} />
-        <Button title="Excluir" onPress={onDelete} />
-        <Button title="Cancelar" onPress={onClose} />
-      </View>
+      <ActionFooter>
+          <ActionPrimaryButton
+            title={entry.id ? 'Salvar' : 'Adicionar'}
+            onPress={() => {
+              isValid() && onSave();
+            }}
+          />
+
+          <ActionSecondaryButton
+            title="Cancelar"
+            onPress={onClose}
+          />
+
+      </ActionFooter>
     </View>
   );
 };
@@ -79,9 +127,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     padding: 10,
   },
-  input: {
-    borderColor: '#000',
-    borderWidth: 1,
+  formContainer: {
+    flex: 1,
+    paddingVertical: 20,
+  },
+  formActionContainerinput: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
   },
 });
 

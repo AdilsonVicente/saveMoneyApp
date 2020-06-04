@@ -1,31 +1,19 @@
 /* eslint-disable prettier/prettier */
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {FlatList} from 'react-native';
 
 import Container from '../Core/Container';
 
+import useEntries from '../../hooks/useEntries';
+
 import EntryListItem from './EntryListItem';
 
-import {getEntries} from '../../services/Entries';
-
-const EntryList = ({onEntryPress, onPressActionButton}) => {
-  const [entries, setEntries] = useState([]);
-
-  useEffect(() => {
-    async function loadEntries() {
-      const data = await getEntries();
-      setEntries(data);
-    }
-
-    loadEntries();
-
-    console.log('EntryList :: useEffect');
-  }, []);
-
+const EntryList = ({days = 7, category, onEntryPress, onPressActionButton}) => {
+  const [entries] = useEntries(days, category);
   return (
     <Container
       title="Últimos lançamentos"
-      actionLabelText="Últimos 7 dias"
+      actionLabelText={`Últimos ${days} dias`}
       actionButtonText="Ver mais"
       onPressActionButton={onPressActionButton}>
       <FlatList

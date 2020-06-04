@@ -135,10 +135,29 @@ export const getDefaultCategories = () => {
 
 export const getAllCategories = async () => {
     const realm = await getRealm();
-
     return realm.objects('Category').sorted('order');
 };
 
-export const getDebitCategories = as() => {
+export const getDebitCategories = async () => {
+    const realm = await getRealm();
+    return realm
+    .objects('Category')
+    .filtered('isDebit = true AND isInit = false')
+    .sorted('order');
+};
 
-}
+export const getCreditCategories = async () => {
+    const realm = await getRealm();
+    return realm
+    .objects('Category')
+    .filtered('isCredit = true AND isInit = false')
+    .sorted('order');
+};
+
+export const getInitCategories = async () => {
+    const realm = await getRealm();
+    return realm
+    .objects('Category')
+    .filtered('isInit = true')
+    .sorted('order');
+};

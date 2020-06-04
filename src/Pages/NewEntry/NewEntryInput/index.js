@@ -1,83 +1,16 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import React from 'react';
 
-import {TextInputMask} from 'react-native-masked-text';
+import InputMoney from '../../../components/Core/InputMoney';
 
-import Colors from '../../../styles/Colors';
-
-const NewEntryInput = ({value, onChangeValue}) => {
-    const [debit, setDebit] = useState(value < 0 ? -1 : 1);
-    const [debitPrefix, setDebitPrefix] = useState(value < 0 ? '-' : '');
-
-    const onChangeDebitCredit = () => {
-        if (debit < 0) {
-          setDebit(1);
-          setDebitPrefix('');
-        } else {
-            setDebit(-1);
-            setDebitPrefix('-');
-        }
-
-        onChangeValue(value * -1);
-    };
-
+const NewEntryInput = ({value, onChangeDebit, onChangeValue}) => {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.debitButton} onPress={onChangeDebitCredit}>
-          <Text style={styles.debitButtonPrefix}>{debitPrefix}</Text>
-          <Text style={styles.debitButtonText}>RS</Text>
-      </TouchableOpacity>
-      <TextInputMask
-        style={styles.input}
-        type={'money'}
-        options={{
-            precision: 2,
-            separator: ',',
-            delimiter: '.',
-            unit: '',
-            suffixUnit: '',
-        }}
+    <InputMoney
         value={value}
-        includeRawValueInChangeText={true}
-        onChangeText={(maskedValue, rawValue) => {
-            onChangeValue(rawValue * debit);
-        }}
-      />
-    </View>
+        onChangeDebit={onChangeDebit}
+        onChangeValue={onChangeValue}
+    />
   );
 };
 
-const styles = StyleSheet.create({
-
-    container: {
-        flexDirection: 'row',
-        backgroundColor: Colors.asphalt,
-        borderRadius: 15,
-        marginVertical: 10,
-        marginHorizontal: 20,
-    },
-    input: {
-        flex: 1,
-        fontSize: 28,
-        color: Colors.white,
-        textAlign: 'right',
-        paddingLeft: 0,
-        paddingRight: 20,
-    },
-    debitButton: {
-       flexDirection: 'row',
-       paddingVertical: 20,
-       paddingHorizontal: 20,
-    },
-    debitButtonPrefix: {
-        fontSize: 28,
-        color: Colors.white,
-        minWidth: 8,
-    },
-    debitButtonText: {
-        fontSize: 28,
-        color: Colors.white,
-    },
-});
 export default NewEntryInput;
