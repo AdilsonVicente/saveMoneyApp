@@ -7,6 +7,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Colors from '../../../styles/Colors';
 
+import Currency from '../../Core/Currency';
+import moment from '../../../vendors/moment';
+
 const EntryListItem = ({entry, isFirstItem, isLastItem, onEntryPress}) => {
   const bulletLineY = isFirstItem ? 25 : 0;
   const bulletLineHeight = isLastItem ? 25 : 50;
@@ -48,7 +51,9 @@ const EntryListItem = ({entry, isFirstItem, isLastItem, onEntryPress}) => {
 
           <View style={styles.details}>
             <Icon style={styles.entryAtIcon} name="access-time" size={12}/>
-            <Text style={styles.entryAtText} >{entry.entryAt.toString()}</Text>
+            <Text style={styles.entryAtText} >
+              {moment(entry.entryAt).calendar()}
+            </Text>
             {entry.address && (
               <>
                 <Icon style={styles.addressIcon} name="person-pin" size={12}/>
@@ -59,7 +64,9 @@ const EntryListItem = ({entry, isFirstItem, isLastItem, onEntryPress}) => {
         </View>
 
         <View style={styles.amount}>
-          <Text style={styles.amountText}>{entry.amount}</Text>
+          <Text style={styles.amountText}>
+            <Currency value={entry.amount} />
+          </Text>
         </View>
 
       </View>

@@ -7,15 +7,27 @@ import ActionFooter, { ActionPrimaryButton } from '../../components/Core/ActionF
 import WelcomeMessage from './WelcomeMessage';
 import WelcomeBalanceInput from './WelcomeBalanceInput';
 
+import useCategories from '../../hooks/useCategories';
+import { saveEntry } from '../../services/Entries';
+import { setInitialized } from '../../services/Welcome';
+
 import Colors from '../../styles/Colors';
 
 import Logo from '../../assets/logo-white.png';
 
 const Welcome = ({navigation}) => {
+  const [,,, initCategories] = useCategories();
     const [amount, setAmount] = useState(0);
 
-    const onsavePress = () => {
+    const onSavePress = () => {
+      saveEntry({
+        amount: amount,
+        isInit: true,
+        category: initCategories,
+      });
 
+      setInitialized();
+      navigation.navigate('Main');
     };
 
   return (
@@ -26,7 +38,7 @@ const Welcome = ({navigation}) => {
       <WelcomeMessage />
       <WelcomeBalanceInput value={amount} onChangeValue={setAmount} />
       <ActionFooter>
-          <ActionPrimaryButton title="Continuar" onPress={onsavePress} />
+          <ActionPrimaryButton title="Continuar" onPress={onSavePress} />
       </ActionFooter>
     </View>
   );

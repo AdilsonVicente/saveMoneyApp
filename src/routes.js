@@ -6,17 +6,20 @@ import Main from './Pages/Main';
 import NewEntry from './Pages/NewEntry';
 import Report from './Pages/Report';
 
+import Loading from './Pages/Loading';
+
 const Routes = createAppContainer(
   createSwitchNavigator(
     {
+      Loading,
       Welcome,
       Main,
       NewEntry,
       Report,
     },
     {
-      initialRouteName: 'Welcome',
-      backBehavior: 'order',
+      initialRouteName: 'Loading',
+      backBehavior: 'history',
     },
   ),
 );

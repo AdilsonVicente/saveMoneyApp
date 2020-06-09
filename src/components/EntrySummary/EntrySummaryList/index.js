@@ -2,7 +2,7 @@
 import React from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 
-import EntrySummaryListItem from './EntrySummaryListItem';
+import EntrySummaryListItem from '../EntrySummaryListItem';
 
 const EntrySummaryList = ({data}) => {
   return (

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StatusBar, View, StyleSheet} from 'react-native';
 
 import ActionFooter, {ActionPrimaryButton, ActionSecondaryButton} from '../../components/Core/ActionFooter';
 
@@ -74,6 +74,7 @@ const NewEntry = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={Colors.violet} />
       <BalanceLabel />
 
       <View style={styles.formContainer}>
